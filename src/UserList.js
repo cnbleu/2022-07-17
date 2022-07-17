@@ -1,13 +1,6 @@
 import React from "react";
 export default function UserList(props) {
-  const {
-    listData,
-    onDeleteItem,
-    onEditItem,
-    onMoveUp,
-    onMoveDown,
-    onCopy
-  } = props;
+  const { listData, onDeleteItem, onEditItem, onMoveUp, onMoveDown, onCopy } = props;
   // Action 删除
   const handleDelete = (index) => {
     onDeleteItem && onDeleteItem(index);
@@ -22,7 +15,7 @@ export default function UserList(props) {
   };
   // Action 复制
   const handleCopy = (item, index) => {
-    onCopy && onCopy(item);
+    onCopy && onCopy(item, index);
   };
   // Action编辑
   const handleEdit = (item) => {
@@ -30,15 +23,7 @@ export default function UserList(props) {
   };
 
   return (
-    <div
-      style={{
-        marginTop: 10,
-        marginLeft: 10,
-        borderWidth: 10,
-        borderColor: "blue",
-        padding: 10
-      }}
-    >
+    <div style={{ marginTop: 10, marginLeft: 10 }}>
       {listData &&
         listData.map((item, i) => {
           return (
@@ -57,7 +42,7 @@ export default function UserList(props) {
               </div>
               <div>
                 <span
-                  onClick={handleDelete(item, i)}
+                  onClick={handleDelete}
                   style={{ color: "red", marginLeft: 10 }}
                 >
                   [删除]
@@ -68,24 +53,9 @@ export default function UserList(props) {
                 >
                   [编辑]
                 </span>
-                <span
-                  onClick={() => handleUp(item, i)}
-                  style={{ marginLeft: 10 }}
-                >
-                  [上移]
-                </span>
-                <span
-                  onClick={() => handleDown(item, i)}
-                  style={{ marginLeft: 10 }}
-                >
-                  [下移]
-                </span>
-                <span
-                  onClick={() => handleCopy(item, i)}
-                  style={{ marginLeft: 10 }}
-                >
-                  [复制]
-                </span>
+                <span onClick={()=>{ handleUp(item, i) }} style={{ marginLeft: 10, color: `${i == 0 ? "gray" : "black"}`}}>[上移]</span>
+                <span onClick={()=>{ handleDown(item, i) }} style={{ marginLeft: 10, color: `${i == listData.length-1 ? "gray" : "black"}` }}>[下移]</span>
+                <span onClick={()=>{ handleCopy(item, i) }} style={{ marginLeft: 10 }}>[复制]</span>
               </div>
             </div>
           );

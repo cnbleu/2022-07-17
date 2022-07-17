@@ -13,8 +13,7 @@ const defaultUserInfo = {
 
 export default function App() {
   const [userListData, setUserListData] = useState(() => {
-    // 从localStorage读取用户数据
-    let value = localStorage.getItem("yb_user_list_data");
+    let value = localStorage.getItem("yb_user_data");
     if (value) {
       return JSON.parse(value);
     } else {
@@ -38,11 +37,7 @@ export default function App() {
       userListData.push(values);
       setUserListData([...userListData]);
     }
-    // 保存用户数据到localStorage
-    localStorage.setItem(
-      "yb_user_list_data",
-      JSON.stringify([...userListData])
-    );
+    localStorage.setItem("yb_user_data", JSON.stringify([...userListData]));
     setFormVisible(false);
     callback && callback();
   };
@@ -65,6 +60,40 @@ export default function App() {
     setDefaultFormData(item);
   };
 
+  const swapIndex = (arry, idx1, idx2) => {
+    arry[idx1] = arry.splice(idx2, 1, arry[idx1])[0];
+    return arry;
+  }
+
+  const onMoveUp = (item, index) => {
+    console.log(`onMoveUp: index: ${index}, item: ${item}`);
+    if (index == 0) {
+      return;
+    }
+
+    swapIndex(userListData, index, index - 1);
+    setUserListData([...userListData]);
+  }
+
+  const onMoveDown = (item, index) => {
+    console.log(`onMoveDown: index: ${index}, item: ${item}`);
+    if (index >= userListData.length) {
+      return;
+    }
+
+    swapIndex(userListData, index, index + 1);
+    setUserListData([...userListData]);
+  }
+
+  const onCopy = (item, index) => {
+    console.log(`onCopy: index: ${index}, item: ${item}`);
+    const value = JSON.parse(JSON.stringify(item));
+    value.id = null;
+    handleSubmit(value, () => {
+      alert("复制成功");
+    })
+  }
+
   return (
     <div>
       {/* 添加按钮 */}
@@ -76,6 +105,9 @@ export default function App() {
         listData={userListData}
         onDeleteItem={handleDeleteItem}
         onEditItem={handleEditItem}
+        onMoveUp={onMoveUp}
+        onMoveDown={onMoveDown}
+        onCopy={onCopy}
       />
       {/* 用户信息表单 */}
       {formVisible && (
